@@ -4,6 +4,7 @@ import {
     useState
 } from 'react';
 import PropTypes from 'prop-types';
+import { debounce } from 'lodash';
 /*
 `entries`参数是一个数组,数组中包含了所有被观察目标的IntersectionObserverEntry对象。每个IntersectionObserverEntry对象包含了以下属性:
 
@@ -64,6 +65,8 @@ export const MyLazyLoad = (props)=>{
         }
     }
 
+    const debouncedHandler = debounce(lazyLoadHandler, 500);
+
     useEffect(()=>{
         const options = {
             rootMargin: typeof offset === 'number' ? `${offset}px` : offset || '0px', // 距离可视区域多远触发回调
@@ -71,7 +74,7 @@ export const MyLazyLoad = (props)=>{
         };
         // 创建IntersectionObserver 对象监听div是否进入可视区域
         // 参数1：可视区域回调函数，参数2配置项
-        elementObserver.current = new IntersectionObserver(lazyLoadHandler,options);
+        elementObserver.current = new IntersectionObserver(debouncedHandler,options);
 
         const node = containerRef.current;
         if(node){
